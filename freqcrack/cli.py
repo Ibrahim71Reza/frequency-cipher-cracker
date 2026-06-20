@@ -9,6 +9,7 @@ from freqcrack.core.frequency import (
 )
 from freqcrack.core.caesar import crack_caesar
 from freqcrack.core.atbash import decrypt_atbash
+from freqcrack.core.affine import crack_affine
 
 
 def read_input(input_value: str) -> str:
@@ -80,6 +81,26 @@ def solve_atbash_command(args):
     print()
 
 
+def solve_affine_command(args):
+    text = read_input(args.input)
+    results = crack_affine(text, top=args.top)
+
+    print()
+    print("FreqCrack - Affine Solver")
+    print("=" * 30)
+
+    for index, result in enumerate(results, start=1):
+        print()
+        print(
+            f"[{index}] a: {result['a']} | b: {result['b']} | "
+            f"Score: {result['score']}"
+        )
+        print("-" * 30)
+        print(result["plaintext"].strip())
+
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -122,6 +143,20 @@ def main():
     )
     atbash_parser.add_argument("input", help="Cipher text or file path")
     atbash_parser.set_defaults(func=solve_atbash_command)
+
+    affine_parser = solve_subparsers.add_parser(
+        "affine",
+        help="Crack Affine cipher by trying valid a and b keys."
+    )
+    affine_parser.add_argument("input", help="Cipher text or file path")
+    affine_parser.add_argument(
+        "-t",
+        "--top",
+        type=int,
+        default=5,
+        help="Number of best results to show."
+    )
+    affine_parser.set_defaults(func=solve_affine_command)
 
     args = parser.parse_args()
 
