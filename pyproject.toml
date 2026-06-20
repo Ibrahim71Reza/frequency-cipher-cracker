@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "frequency-cipher-cracker"
+version = "0.1.0"
+description = "A Kali Linux terminal tool for frequency analysis and classical cipher cracking."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "Avins" }
+]
+
+[project.scripts]
+freqcrack = "freqcrack.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["freqcrack*"]
+exclude = ["samples*", "tests*"]
