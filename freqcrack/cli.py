@@ -15,6 +15,7 @@ from freqcrack.core.vigenere import crack_vigenere
 from freqcrack.core.beaufort import crack_beaufort
 from freqcrack.core.railfence import crack_rail_fence
 from freqcrack.core.columnar import crack_columnar
+from freqcrack.core.substitution import crack_substitution_frequency
 
 
 def read_input(input_value: str) -> str:
@@ -258,6 +259,28 @@ def solve_columnar_command(args):
     print()
 
 
+def solve_substitution_command(args):
+    text = read_input(args.input)
+    result = crack_substitution_frequency(text)
+
+    print()
+    print("FreqCrack - Substitution Frequency Solver")
+    print("=" * 45)
+    print(f"Method: {result['method']}")
+    print(f"Score : {result['score']}")
+    print()
+    print("Guessed mapping:")
+    print(result["mapping_text"])
+    print()
+    print("Plaintext guess:")
+    print("-" * 45)
+    print(result["plaintext"].strip())
+    print()
+    print("Note: This is a first-stage frequency guess, not a full")
+    print("hill-climbing substitution crack yet.")
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -354,6 +377,13 @@ def main():
         help="Maximum permutations allowed per column size."
     )
     columnar_parser.set_defaults(func=solve_columnar_command)
+
+    substitution_parser = solve_subparsers.add_parser(
+        "substitution",
+        help="Guess Monoalphabetic Substitution cipher using letter frequency."
+    )
+    substitution_parser.add_argument("input", help="Cipher text or file path")
+    substitution_parser.set_defaults(func=solve_substitution_command)
 
     args = parser.parse_args()
 
