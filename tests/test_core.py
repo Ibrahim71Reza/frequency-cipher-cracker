@@ -15,6 +15,7 @@ from freqcrack.core.keyword import encrypt_keyword, decrypt_keyword
 from freqcrack.core.playfair import encrypt_playfair, decrypt_playfair
 from freqcrack.core.autokey import encrypt_autokey, decrypt_autokey
 from freqcrack.core.polybius import encrypt_polybius, decrypt_polybius
+from freqcrack.core.baconian import encrypt_baconian, decrypt_baconian
 
 
 class TestCoreTools(unittest.TestCase):
@@ -29,6 +30,16 @@ class TestCoreTools(unittest.TestCase):
 
         self.assertEqual(ngram_frequency("ABABAB", 2, 2)[0], ("AB", 3))
         self.assertGreater(index_of_coincidence("HELLOWORLDHELLOWORLD"), 0)
+
+    def test_baconian(self):
+        plaintext = "HELLO WORLD"
+        ciphertext = encrypt_baconian(plaintext)
+
+        self.assertEqual(
+            ciphertext,
+            "AABBB AABAA ABABA ABABA ABBAB BABAA ABBAB BAAAA ABABA AAABB"
+        )
+        self.assertEqual(decrypt_baconian(ciphertext), "HELLOWORLD")
 
     def test_caesar(self):
         plaintext = "HELLO WORLD THIS IS A TEST MESSAGE FOR FREQCRACK"

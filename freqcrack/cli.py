@@ -26,6 +26,7 @@ from freqcrack.core.keyword import decrypt_keyword
 from freqcrack.core.playfair import decrypt_playfair
 from freqcrack.core.autokey import decrypt_autokey
 from freqcrack.core.polybius import decrypt_polybius
+from freqcrack.core.baconian import decrypt_baconian
 
 
 def read_input(input_value: str) -> str:
@@ -370,6 +371,17 @@ def solve_polybius_command(args):
     print()
 
 
+def solve_baconian_command(args):
+    text = read_input(args.input)
+    plaintext = decrypt_baconian(text)
+
+    print()
+    print("FreqCrack - Baconian Solver")
+    print("=" * 35)
+    print(plaintext.strip())
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -571,6 +583,13 @@ def main():
     )
     polybius_parser.add_argument("input", help="Cipher text or file path")
     polybius_parser.set_defaults(func=solve_polybius_command)
+
+    baconian_parser = solve_subparsers.add_parser(
+        "baconian",
+        help="Decode Baconian cipher."
+    )
+    baconian_parser.add_argument("input", help="Cipher text or file path")
+    baconian_parser.set_defaults(func=solve_baconian_command)
 
     args = parser.parse_args()
 
