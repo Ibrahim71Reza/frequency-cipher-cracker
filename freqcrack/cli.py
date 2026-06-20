@@ -12,6 +12,7 @@ from freqcrack.core.atbash import decrypt_atbash
 from freqcrack.core.affine import crack_affine
 from freqcrack.core.detect import detect_cipher
 from freqcrack.core.vigenere import crack_vigenere
+from freqcrack.core.beaufort import crack_beaufort
 
 
 def read_input(input_value: str) -> str:
@@ -171,6 +172,32 @@ def solve_vigenere_command(args):
     print()
 
 
+def solve_beaufort_command(args):
+    text = read_input(args.input)
+    results = crack_beaufort(
+        text,
+        max_key_length=args.max_key_length,
+        top=args.top,
+    )
+
+    print()
+    print("FreqCrack - Beaufort Solver")
+    print("=" * 30)
+
+    for index, result in enumerate(results, start=1):
+        print()
+        print(
+            f"[{index}] Key: {result['key']} | "
+            f"Length: {result['key_length']} | "
+            f"Avg IC: {result['avg_ic']} | "
+            f"Score: {result['score']}"
+        )
+        print("-" * 30)
+        print(result["plaintext"].strip())
+
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -205,13 +232,7 @@ def main():
         help="Crack Caesar cipher by trying all shifts."
     )
     caesar_parser.add_argument("input", help="Cipher text or file path")
-    caesar_parser.add_argument(
-        "-t",
-        "--top",
-        type=int,
-        default=5,
-        help="Number of best results to show."
-    )
+    caesar_parser.add_argument("-t", "--top", type=int, default=5)
     caesar_parser.set_defaults(func=solve_caesar_command)
 
     atbash_parser = solve_subparsers.add_parser(
@@ -226,13 +247,7 @@ def main():
         help="Crack Affine cipher by trying valid a and b keys."
     )
     affine_parser.add_argument("input", help="Cipher text or file path")
-    affine_parser.add_argument(
-        "-t",
-        "--top",
-        type=int,
-        default=5,
-        help="Number of best results to show."
-    )
+    affine_parser.add_argument("-t", "--top", type=int, default=5)
     affine_parser.set_defaults(func=solve_affine_command)
 
     vigenere_parser = solve_subparsers.add_parser(
@@ -240,28 +255,19 @@ def main():
         help="Crack Vigenere cipher using frequency analysis."
     )
     vigenere_parser.add_argument("input", help="Cipher text or file path")
-    vigenere_parser.add_argument(
-        "-t",
-        "--top",
-        type=int,
-        default=5,
-        help="Number of best results to show."
-    )
-    vigenere_parser.add_argument(
-        "-m",
-        "--max-key-length",
-        type=int,
-        default=12,
-        help="Maximum key length to try."
-    )
-    vigenere_parser.add_argument(
-        "-s",
-        "--shift-candidates",
-        type=int,
-        default=5,
-        help="Number of Caesar shift candidates to try per key column."
-    )
+    vigenere_parser.add_argument("-t", "--top", type=int, default=5)
+    vigenere_parser.add_argument("-m", "--max-key-length", type=int, default=12)
+    vigenere_parser.add_argument("-s", "--shift-candidates", type=int, default=5)
     vigenere_parser.set_defaults(func=solve_vigenere_command)
+
+    beaufort_parser = solve_subparsers.add_parser(
+        "beaufort",
+        help="Crack Beaufort cipher using frequency analysis."
+    )
+    beaufort_parser.add_argument("input", help="Cipher text or file path")
+    beaufort_parser.add_argument("-t", "--top", type=int, default=5)
+    beaufort_parser.add_argument("-m", "--max-key-length", type=int, default=12)
+    beaufort_parser.set_defaults(func=solve_beaufort_command)
 
     args = parser.parse_args()
 
