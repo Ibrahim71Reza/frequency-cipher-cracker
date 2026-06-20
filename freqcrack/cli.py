@@ -22,6 +22,7 @@ from freqcrack.core.substitution import (
     crack_substitution_hillclimb,
 )
 from freqcrack.core.rot import decrypt_rot, decrypt_rot47
+from freqcrack.core.keyword import decrypt_keyword
 
 
 def read_input(input_value: str) -> str:
@@ -316,6 +317,19 @@ def solve_rot_command(args):
     print()
 
 
+def solve_keyword_command(args):
+    text = read_input(args.input)
+    plaintext = decrypt_keyword(text, args.key)
+
+    print()
+    print("FreqCrack - Keyword Substitution Solver")
+    print("=" * 45)
+    print(f"Key: {args.key}")
+    print("-" * 45)
+    print(plaintext.strip())
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -471,6 +485,19 @@ def main():
         help="Decode using ROT47 instead of alphabetic ROT."
     )
     rot_parser.set_defaults(func=solve_rot_command)
+
+    keyword_parser = solve_subparsers.add_parser(
+        "keyword",
+        help="Decode Keyword Substitution cipher with a known key."
+    )
+    keyword_parser.add_argument("input", help="Cipher text or file path")
+    keyword_parser.add_argument(
+        "-k",
+        "--key",
+        required=True,
+        help="Keyword used to build the substitution alphabet."
+    )
+    keyword_parser.set_defaults(func=solve_keyword_command)
 
     args = parser.parse_args()
 
