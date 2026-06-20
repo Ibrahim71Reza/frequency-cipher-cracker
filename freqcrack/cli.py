@@ -1,4 +1,6 @@
 import argparse
+
+from freqcrack import __version__
 from pathlib import Path
 
 from freqcrack.core.text import clean_text
@@ -300,6 +302,13 @@ def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
         description="A terminal tool for frequency analysis and classical cipher cracking."
+    )
+
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=f"freqcrack {__version__}",
     )
 
     subparsers = parser.add_subparsers(dest="command")
