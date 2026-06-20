@@ -13,6 +13,7 @@ from freqcrack.core.affine import crack_affine
 from freqcrack.core.detect import detect_cipher
 from freqcrack.core.vigenere import crack_vigenere
 from freqcrack.core.beaufort import crack_beaufort
+from freqcrack.core.railfence import crack_rail_fence
 
 
 def read_input(input_value: str) -> str:
@@ -199,6 +200,30 @@ def solve_beaufort_command(args):
     print()
 
 
+def solve_railfence_command(args):
+    text = read_input(args.input)
+    results = crack_rail_fence(
+        text,
+        max_rails=args.max_rails,
+        top=args.top,
+    )
+
+    print()
+    print("FreqCrack - Rail Fence Solver")
+    print("=" * 30)
+
+    for index, result in enumerate(results, start=1):
+        print()
+        print(
+            f"[{index}] Rails: {result['rails']} | "
+            f"Score: {result['score']}"
+        )
+        print("-" * 30)
+        print(result["plaintext"].strip())
+
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -270,6 +295,15 @@ def main():
     beaufort_parser.add_argument("-m", "--max-key-length", type=int, default=12)
     beaufort_parser.add_argument("-k", "--key-candidates", type=int, default=5)
     beaufort_parser.set_defaults(func=solve_beaufort_command)
+
+    railfence_parser = solve_subparsers.add_parser(
+        "railfence",
+        help="Crack Rail Fence cipher by trying rail counts."
+    )
+    railfence_parser.add_argument("input", help="Cipher text or file path")
+    railfence_parser.add_argument("-t", "--top", type=int, default=5)
+    railfence_parser.add_argument("-m", "--max-rails", type=int, default=10)
+    railfence_parser.set_defaults(func=solve_railfence_command)
 
     args = parser.parse_args()
 
