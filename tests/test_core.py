@@ -12,6 +12,7 @@ from freqcrack.core.columnar import encrypt_columnar, decrypt_columnar, crack_co
 from freqcrack.core.substitution import crack_substitution_hillclimb
 from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 from freqcrack.core.keyword import encrypt_keyword, decrypt_keyword
+from freqcrack.core.playfair import encrypt_playfair, decrypt_playfair
 
 
 class TestCoreTools(unittest.TestCase):
@@ -90,6 +91,14 @@ class TestCoreTools(unittest.TestCase):
 
         ciphertext = encrypt_keyword(plaintext, key)
         self.assertEqual(decrypt_keyword(ciphertext, key), plaintext)
+
+    def test_playfair(self):
+        plaintext = "HIDE THE GOLD IN THE TREE STUMP"
+        key = "PLAYFAIR EXAMPLE"
+
+        ciphertext = encrypt_playfair(plaintext, key)
+        self.assertEqual(ciphertext, "BMODZBXDNABEKUDMUIXMMOUVIF")
+        self.assertEqual(decrypt_playfair(ciphertext, key), "HIDETHEGOLDINTHETREXESTUMP")
 
     def test_rot(self):
         plaintext = "HELLO WORLD THIS IS A TEST MESSAGE FOR FREQCRACK"

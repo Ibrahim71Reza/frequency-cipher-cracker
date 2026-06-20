@@ -23,6 +23,7 @@ from freqcrack.core.substitution import (
 )
 from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 from freqcrack.core.keyword import decrypt_keyword
+from freqcrack.core.playfair import decrypt_playfair
 
 
 def read_input(input_value: str) -> str:
@@ -330,6 +331,19 @@ def solve_keyword_command(args):
     print()
 
 
+def solve_playfair_command(args):
+    text = read_input(args.input)
+    plaintext = decrypt_playfair(text, args.key)
+
+    print()
+    print("FreqCrack - Playfair Solver")
+    print("=" * 35)
+    print(f"Key: {args.key}")
+    print("-" * 35)
+    print(plaintext.strip())
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -498,6 +512,19 @@ def main():
         help="Keyword used to build the substitution alphabet."
     )
     keyword_parser.set_defaults(func=solve_keyword_command)
+
+    playfair_parser = solve_subparsers.add_parser(
+        "playfair",
+        help="Decode Playfair cipher with a known key."
+    )
+    playfair_parser.add_argument("input", help="Cipher text or file path")
+    playfair_parser.add_argument(
+        "-k",
+        "--key",
+        required=True,
+        help="Playfair key phrase."
+    )
+    playfair_parser.set_defaults(func=solve_playfair_command)
 
     args = parser.parse_args()
 
