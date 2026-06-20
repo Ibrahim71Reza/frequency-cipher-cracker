@@ -178,6 +178,7 @@ def solve_beaufort_command(args):
         text,
         max_key_length=args.max_key_length,
         top=args.top,
+        key_candidates=args.key_candidates,
     )
 
     print()
@@ -267,6 +268,7 @@ def main():
     beaufort_parser.add_argument("input", help="Cipher text or file path")
     beaufort_parser.add_argument("-t", "--top", type=int, default=5)
     beaufort_parser.add_argument("-m", "--max-key-length", type=int, default=12)
+    beaufort_parser.add_argument("-k", "--key-candidates", type=int, default=5)
     beaufort_parser.set_defaults(func=solve_beaufort_command)
 
     args = parser.parse_args()
