@@ -14,6 +14,7 @@ from freqcrack.core.detect import detect_cipher
 from freqcrack.core.vigenere import crack_vigenere
 from freqcrack.core.beaufort import crack_beaufort
 from freqcrack.core.railfence import crack_rail_fence
+from freqcrack.core.columnar import crack_columnar
 
 
 def read_input(input_value: str) -> str:
@@ -224,6 +225,39 @@ def solve_railfence_command(args):
     print()
 
 
+def solve_columnar_command(args):
+    text = read_input(args.input)
+    results = crack_columnar(
+        text,
+        max_columns=args.max_columns,
+        top=args.top,
+        max_permutations=args.max_permutations,
+    )
+
+    print()
+    print("FreqCrack - Columnar Transposition Solver")
+    print("=" * 45)
+
+    if not results:
+        print("No results. Try increasing --max-permutations or lowering --max-columns.")
+        print()
+        return
+
+    for index, result in enumerate(results, start=1):
+        order_text = ",".join(str(value) for value in result["order"])
+
+        print()
+        print(
+            f"[{index}] Columns: {result['columns']} | "
+            f"Order: {order_text} | "
+            f"Score: {result['score']}"
+        )
+        print("-" * 45)
+        print(result["plaintext"].strip())
+
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -304,6 +338,22 @@ def main():
     railfence_parser.add_argument("-t", "--top", type=int, default=5)
     railfence_parser.add_argument("-m", "--max-rails", type=int, default=10)
     railfence_parser.set_defaults(func=solve_railfence_command)
+
+    columnar_parser = solve_subparsers.add_parser(
+        "columnar",
+        help="Crack Columnar Transposition cipher by trying column orders."
+    )
+    columnar_parser.add_argument("input", help="Cipher text or file path")
+    columnar_parser.add_argument("-t", "--top", type=int, default=5)
+    columnar_parser.add_argument("-m", "--max-columns", type=int, default=7)
+    columnar_parser.add_argument(
+        "-p",
+        "--max-permutations",
+        type=int,
+        default=5040,
+        help="Maximum permutations allowed per column size."
+    )
+    columnar_parser.set_defaults(func=solve_columnar_command)
 
     args = parser.parse_args()
 
