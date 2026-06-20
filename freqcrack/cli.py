@@ -24,6 +24,7 @@ from freqcrack.core.substitution import (
 from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 from freqcrack.core.keyword import decrypt_keyword
 from freqcrack.core.playfair import decrypt_playfair
+from freqcrack.core.autokey import decrypt_autokey
 
 
 def read_input(input_value: str) -> str:
@@ -344,6 +345,19 @@ def solve_playfair_command(args):
     print()
 
 
+def solve_autokey_command(args):
+    text = read_input(args.input)
+    plaintext = decrypt_autokey(text, args.key)
+
+    print()
+    print("FreqCrack - Autokey Solver")
+    print("=" * 35)
+    print(f"Key: {args.key}")
+    print("-" * 35)
+    print(plaintext.strip())
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -525,6 +539,19 @@ def main():
         help="Playfair key phrase."
     )
     playfair_parser.set_defaults(func=solve_playfair_command)
+
+    autokey_parser = solve_subparsers.add_parser(
+        "autokey",
+        help="Decode Autokey Vigenere cipher with a known key."
+    )
+    autokey_parser.add_argument("input", help="Cipher text or file path")
+    autokey_parser.add_argument(
+        "-k",
+        "--key",
+        required=True,
+        help="Autokey starting key."
+    )
+    autokey_parser.set_defaults(func=solve_autokey_command)
 
     args = parser.parse_args()
 

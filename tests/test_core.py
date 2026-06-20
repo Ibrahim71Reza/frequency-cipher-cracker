@@ -13,6 +13,7 @@ from freqcrack.core.substitution import crack_substitution_hillclimb
 from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 from freqcrack.core.keyword import encrypt_keyword, decrypt_keyword
 from freqcrack.core.playfair import encrypt_playfair, decrypt_playfair
+from freqcrack.core.autokey import encrypt_autokey, decrypt_autokey
 
 
 class TestCoreTools(unittest.TestCase):
@@ -58,6 +59,13 @@ class TestCoreTools(unittest.TestCase):
 
         self.assertEqual(decrypt_vigenere(ciphertext, key), plaintext)
         self.assertEqual(crack_vigenere(ciphertext, max_key_length=6, top=1)[0]["key"], key)
+
+    def test_autokey(self):
+        plaintext = "HELLO WORLD THIS IS A TEST MESSAGE FOR FREQCRACK"
+        key = "QUEENLY"
+
+        ciphertext = encrypt_autokey(plaintext, key)
+        self.assertEqual(decrypt_autokey(ciphertext, key), plaintext)
 
     def test_beaufort(self):
         plaintext = (
