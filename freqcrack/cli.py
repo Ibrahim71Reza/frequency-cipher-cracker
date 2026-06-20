@@ -10,6 +10,7 @@ from freqcrack.core.frequency import (
 from freqcrack.core.caesar import crack_caesar
 from freqcrack.core.atbash import decrypt_atbash
 from freqcrack.core.affine import crack_affine
+from freqcrack.core.detect import detect_cipher
 
 
 def read_input(input_value: str) -> str:
@@ -49,6 +50,47 @@ def analyze_command(args):
     print("Top Trigrams:")
     for gram, count in ngram_frequency(cleaned, 3, 10):
         print(f"  {gram}: {count}")
+
+    print()
+
+
+def detect_command(args):
+    text = read_input(args.input)
+    result = detect_cipher(text)
+
+    print()
+    print("FreqCrack - Cipher Detector")
+    print("=" * 35)
+    print(f"Cleaned length    : {result['length']}")
+    print(f"IC value          : {result['ic']}")
+    print(f"Repeated trigrams : {result['repeated_trigrams']}")
+    print()
+
+    print("Likely cipher types:")
+    for index, cipher_type in enumerate(result["likely_types"], start=1):
+        print(f"  [{index}] {cipher_type}")
+
+    print()
+    print("Solver quick checks:")
+
+    if "best_caesar" in result:
+        caesar = result["best_caesar"]
+        print(
+            f"  Caesar best : shift={caesar['shift']} "
+            f"score={caesar['score']}"
+        )
+
+    if "best_affine" in result:
+        affine = result["best_affine"]
+        print(
+            f"  Affine best : a={affine['a']} b={affine['b']} "
+            f"score={affine['score']}"
+        )
+
+    print()
+    print("Suggestions:")
+    for suggestion in result["suggestions"]:
+        print(f"  - {suggestion}")
 
     print()
 
@@ -115,6 +157,13 @@ def main():
     )
     analyze_parser.add_argument("input", help="Cipher text or file path")
     analyze_parser.set_defaults(func=analyze_command)
+
+    detect_parser = subparsers.add_parser(
+        "detect",
+        help="Detect likely classical cipher type."
+    )
+    detect_parser.add_argument("input", help="Cipher text or file path")
+    detect_parser.set_defaults(func=detect_command)
 
     solve_parser = subparsers.add_parser(
         "solve",
