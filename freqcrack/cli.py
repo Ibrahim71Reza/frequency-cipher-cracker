@@ -15,7 +15,10 @@ from freqcrack.core.vigenere import crack_vigenere
 from freqcrack.core.beaufort import crack_beaufort
 from freqcrack.core.railfence import crack_rail_fence
 from freqcrack.core.columnar import crack_columnar
-from freqcrack.core.substitution import crack_substitution_frequency
+from freqcrack.core.substitution import (
+    crack_substitution_frequency,
+    crack_substitution_hillclimb,
+)
 
 
 def read_input(input_value: str) -> str:
@@ -261,10 +264,21 @@ def solve_columnar_command(args):
 
 def solve_substitution_command(args):
     text = read_input(args.input)
-    result = crack_substitution_frequency(text)
+
+    if args.advanced:
+        result = crack_substitution_hillclimb(
+            text,
+            restarts=args.restarts,
+            iterations=args.iterations,
+            seed=args.seed,
+        )
+        title = "FreqCrack - Advanced Substitution Solver"
+    else:
+        result = crack_substitution_frequency(text)
+        title = "FreqCrack - Substitution Frequency Solver"
 
     print()
-    print("FreqCrack - Substitution Frequency Solver")
+    print(title)
     print("=" * 45)
     print(f"Method: {result['method']}")
     print(f"Score : {result['score']}")
@@ -276,9 +290,10 @@ def solve_substitution_command(args):
     print("-" * 45)
     print(result["plaintext"].strip())
     print()
-    print("Note: This is a first-stage frequency guess, not a full")
-    print("hill-climbing substitution crack yet.")
-    print()
+
+    if not args.advanced:
+        print("Note: Use --advanced for hill-climbing substitution cracking.")
+        print()
 
 
 def main():
@@ -383,6 +398,32 @@ def main():
         help="Guess Monoalphabetic Substitution cipher using letter frequency."
     )
     substitution_parser.add_argument("input", help="Cipher text or file path")
+    substitution_parser.add_argument(
+        "-a",
+        "--advanced",
+        action="store_true",
+        help="Use hill-climbing to improve the substitution mapping."
+    )
+    substitution_parser.add_argument(
+        "-r",
+        "--restarts",
+        type=int,
+        default=30,
+        help="Number of hill-climbing restarts."
+    )
+    substitution_parser.add_argument(
+        "-i",
+        "--iterations",
+        type=int,
+        default=5000,
+        help="Iterations per restart."
+    )
+    substitution_parser.add_argument(
+        "--seed",
+        type=int,
+        default=1337,
+        help="Random seed for reproducible results."
+    )
     substitution_parser.set_defaults(func=solve_substitution_command)
 
     args = parser.parse_args()
