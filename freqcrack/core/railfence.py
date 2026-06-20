@@ -1,6 +1,15 @@
 from .scoring import english_score
 
 
+def normalize_rail_text(text: str) -> str:
+    """
+    Rail Fence works on character positions.
+    Remove only trailing newlines from file input so the newline
+    does not become part of the zigzag pattern.
+    """
+    return text.rstrip("\r\n")
+
+
 def rail_pattern(length: int, rails: int) -> list:
     if rails <= 1:
         return [0] * length
@@ -23,6 +32,8 @@ def rail_pattern(length: int, rails: int) -> list:
 
 
 def encrypt_rail_fence(text: str, rails: int) -> str:
+    text = normalize_rail_text(text)
+
     if rails <= 1:
         return text
 
@@ -35,6 +46,8 @@ def encrypt_rail_fence(text: str, rails: int) -> str:
 
 
 def decrypt_rail_fence(text: str, rails: int) -> str:
+    text = normalize_rail_text(text)
+
     if rails <= 1:
         return text
 
@@ -59,6 +72,7 @@ def decrypt_rail_fence(text: str, rails: int) -> str:
 
 
 def crack_rail_fence(text: str, max_rails: int = 10, top: int = 5) -> list:
+    text = normalize_rail_text(text)
     results = []
 
     for rails in range(2, max_rails + 1):
