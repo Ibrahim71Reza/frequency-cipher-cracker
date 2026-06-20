@@ -7,6 +7,7 @@ from freqcrack.core.frequency import (
     ngram_frequency,
     index_of_coincidence,
 )
+from freqcrack.core.caesar import crack_caesar
 
 
 def read_input(input_value: str) -> str:
@@ -50,6 +51,23 @@ def analyze_command(args):
     print()
 
 
+def solve_caesar_command(args):
+    text = read_input(args.input)
+    results = crack_caesar(text, top=args.top)
+
+    print()
+    print("FreqCrack - Caesar Solver")
+    print("=" * 30)
+
+    for index, result in enumerate(results, start=1):
+        print()
+        print(f"[{index}] Shift: {result['shift']} | Score: {result['score']}")
+        print("-" * 30)
+        print(result["plaintext"].strip())
+
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -65,9 +83,30 @@ def main():
     analyze_parser.add_argument("input", help="Cipher text or file path")
     analyze_parser.set_defaults(func=analyze_command)
 
+    solve_parser = subparsers.add_parser(
+        "solve",
+        help="Solve classical ciphers."
+    )
+
+    solve_subparsers = solve_parser.add_subparsers(dest="cipher")
+
+    caesar_parser = solve_subparsers.add_parser(
+        "caesar",
+        help="Crack Caesar cipher by trying all shifts."
+    )
+    caesar_parser.add_argument("input", help="Cipher text or file path")
+    caesar_parser.add_argument(
+        "-t",
+        "--top",
+        type=int,
+        default=5,
+        help="Number of best results to show."
+    )
+    caesar_parser.set_defaults(func=solve_caesar_command)
+
     args = parser.parse_args()
 
-    if not args.command:
+    if not hasattr(args, "func"):
         parser.print_help()
         return
 
