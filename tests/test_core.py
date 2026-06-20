@@ -10,6 +10,7 @@ from freqcrack.core.beaufort import encrypt_beaufort, decrypt_beaufort, crack_be
 from freqcrack.core.railfence import encrypt_rail_fence, decrypt_rail_fence, crack_rail_fence
 from freqcrack.core.columnar import encrypt_columnar, decrypt_columnar, crack_columnar
 from freqcrack.core.substitution import crack_substitution_hillclimb
+from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 
 
 class TestCoreTools(unittest.TestCase):
@@ -81,6 +82,15 @@ class TestCoreTools(unittest.TestCase):
 
         self.assertEqual(decrypt_columnar(ciphertext, order), plaintext)
         self.assertEqual(crack_columnar(ciphertext, max_columns=6, top=1)[0]["plaintext"], plaintext)
+
+    def test_rot(self):
+        plaintext = "HELLO WORLD THIS IS A TEST MESSAGE FOR FREQCRACK"
+
+        rot13 = decrypt_rot(plaintext, 13)
+        self.assertEqual(decrypt_rot(rot13, 13), plaintext)
+
+        rot47 = decrypt_rot47(plaintext)
+        self.assertEqual(decrypt_rot47(rot47), plaintext)
 
     def test_substitution_advanced(self):
         ciphertext = "SVOOL DLIOW GSRH RH Z GVHG NVHHZTV ULI UIVJXIZXP"

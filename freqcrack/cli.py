@@ -21,6 +21,7 @@ from freqcrack.core.substitution import (
     crack_substitution_frequency,
     crack_substitution_hillclimb,
 )
+from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 
 
 def read_input(input_value: str) -> str:
@@ -298,6 +299,23 @@ def solve_substitution_command(args):
         print()
 
 
+def solve_rot_command(args):
+    text = read_input(args.input)
+
+    if args.rot47:
+        plaintext = decrypt_rot47(text)
+        title = "FreqCrack - ROT47 Solver"
+    else:
+        plaintext = decrypt_rot(text, args.shift)
+        title = f"FreqCrack - ROT Solver Shift {args.shift}"
+
+    print()
+    print(title)
+    print("=" * 35)
+    print(plaintext.strip())
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -434,6 +452,25 @@ def main():
         help="Random seed for reproducible results."
     )
     substitution_parser.set_defaults(func=solve_substitution_command)
+
+    rot_parser = solve_subparsers.add_parser(
+        "rot",
+        help="Decode ROT, ROT13, or ROT47 ciphers."
+    )
+    rot_parser.add_argument("input", help="Cipher text or file path")
+    rot_parser.add_argument(
+        "-s",
+        "--shift",
+        type=int,
+        default=13,
+        help="ROT shift value. Default is 13."
+    )
+    rot_parser.add_argument(
+        "--rot47",
+        action="store_true",
+        help="Decode using ROT47 instead of alphabetic ROT."
+    )
+    rot_parser.set_defaults(func=solve_rot_command)
 
     args = parser.parse_args()
 
