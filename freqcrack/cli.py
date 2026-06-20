@@ -8,6 +8,7 @@ from freqcrack.core.frequency import (
     index_of_coincidence,
 )
 from freqcrack.core.caesar import crack_caesar
+from freqcrack.core.atbash import decrypt_atbash
 
 
 def read_input(input_value: str) -> str:
@@ -68,6 +69,17 @@ def solve_caesar_command(args):
     print()
 
 
+def solve_atbash_command(args):
+    text = read_input(args.input)
+    plaintext = decrypt_atbash(text)
+
+    print()
+    print("FreqCrack - Atbash Solver")
+    print("=" * 30)
+    print(plaintext.strip())
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -103,6 +115,13 @@ def main():
         help="Number of best results to show."
     )
     caesar_parser.set_defaults(func=solve_caesar_command)
+
+    atbash_parser = solve_subparsers.add_parser(
+        "atbash",
+        help="Decode Atbash cipher."
+    )
+    atbash_parser.add_argument("input", help="Cipher text or file path")
+    atbash_parser.set_defaults(func=solve_atbash_command)
 
     args = parser.parse_args()
 
