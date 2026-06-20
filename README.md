@@ -74,6 +74,34 @@ freqcrack solve substitution samples/sample_substitution.txt
 Use advanced substitution solving:
 
 freqcrack solve substitution --advanced samples/sample_substitution.txt
+
+Solve ROT13 cipher:
+
+freqcrack solve rot samples/sample_rot13.txt
+
+Solve ROT47 cipher:
+
+freqcrack solve rot --rot47 samples/sample_rot47.txt
+
+Solve Keyword Substitution cipher:
+
+freqcrack solve keyword samples/sample_keyword.txt --key CIPHER
+
+Solve Playfair cipher:
+
+freqcrack solve playfair samples/sample_playfair.txt --key "PLAYFAIR EXAMPLE"
+
+Solve Autokey Vigenere cipher:
+
+freqcrack solve autokey samples/sample_autokey.txt --key QUEENLY
+
+Solve Polybius Square cipher:
+
+freqcrack solve polybius samples/sample_polybius.txt
+
+Solve Baconian cipher:
+
+freqcrack solve baconian samples/sample_baconian.txt
 Running Tests
 python3 -m unittest discover -s tests -p "test_*.py" -v
 Project Goal
