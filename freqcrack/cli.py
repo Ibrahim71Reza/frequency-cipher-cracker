@@ -11,6 +11,7 @@ from freqcrack.core.caesar import crack_caesar
 from freqcrack.core.atbash import decrypt_atbash
 from freqcrack.core.affine import crack_affine
 from freqcrack.core.detect import detect_cipher
+from freqcrack.core.vigenere import crack_vigenere
 
 
 def read_input(input_value: str) -> str:
@@ -143,6 +144,33 @@ def solve_affine_command(args):
     print()
 
 
+def solve_vigenere_command(args):
+    text = read_input(args.input)
+    results = crack_vigenere(
+        text,
+        max_key_length=args.max_key_length,
+        top=args.top,
+        shift_candidates=args.shift_candidates,
+    )
+
+    print()
+    print("FreqCrack - Vigenere Solver")
+    print("=" * 30)
+
+    for index, result in enumerate(results, start=1):
+        print()
+        print(
+            f"[{index}] Key: {result['key']} | "
+            f"Length: {result['key_length']} | "
+            f"Avg IC: {result['avg_ic']} | "
+            f"Score: {result['score']}"
+        )
+        print("-" * 30)
+        print(result["plaintext"].strip())
+
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -206,6 +234,34 @@ def main():
         help="Number of best results to show."
     )
     affine_parser.set_defaults(func=solve_affine_command)
+
+    vigenere_parser = solve_subparsers.add_parser(
+        "vigenere",
+        help="Crack Vigenere cipher using frequency analysis."
+    )
+    vigenere_parser.add_argument("input", help="Cipher text or file path")
+    vigenere_parser.add_argument(
+        "-t",
+        "--top",
+        type=int,
+        default=5,
+        help="Number of best results to show."
+    )
+    vigenere_parser.add_argument(
+        "-m",
+        "--max-key-length",
+        type=int,
+        default=12,
+        help="Maximum key length to try."
+    )
+    vigenere_parser.add_argument(
+        "-s",
+        "--shift-candidates",
+        type=int,
+        default=5,
+        help="Number of Caesar shift candidates to try per key column."
+    )
+    vigenere_parser.set_defaults(func=solve_vigenere_command)
 
     args = parser.parse_args()
 

@@ -12,8 +12,10 @@ ENGLISH_FREQ = {
 COMMON_WORDS = [
     "THE", "AND", "THAT", "HAVE", "FOR", "NOT", "WITH", "YOU",
     "THIS", "BUT", "HIS", "FROM", "THEY", "SAY", "HER", "SHE",
-    "WILL", "ONE", "ALL", "WOULD", "THERE", "THEIR", "HELLO",
-    "WORLD", "TEST", "MESSAGE",
+    "WILL", "ONE", "ALL", "WOULD", "THERE", "THEIR",
+    "HELLO", "WORLD", "TEST", "MESSAGE", "TOOL", "ANALYZE",
+    "LETTER", "FREQUENCY", "HELP", "SOLVE", "CLASSICAL",
+    "CIPHER", "CIPHERS", "FREQCRACK",
 ]
 
 
