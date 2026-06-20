@@ -14,6 +14,7 @@ from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 from freqcrack.core.keyword import encrypt_keyword, decrypt_keyword
 from freqcrack.core.playfair import encrypt_playfair, decrypt_playfair
 from freqcrack.core.autokey import encrypt_autokey, decrypt_autokey
+from freqcrack.core.polybius import encrypt_polybius, decrypt_polybius
 
 
 class TestCoreTools(unittest.TestCase):
@@ -77,6 +78,13 @@ class TestCoreTools(unittest.TestCase):
 
         self.assertEqual(decrypt_beaufort(ciphertext, key), plaintext)
         self.assertEqual(crack_beaufort(ciphertext, max_key_length=6, top=1)[0]["key"], key)
+
+    def test_polybius(self):
+        plaintext = "HELLO WORLD"
+        ciphertext = encrypt_polybius(plaintext)
+
+        self.assertEqual(ciphertext, "23 15 31 31 34 52 34 42 31 14")
+        self.assertEqual(decrypt_polybius(ciphertext), "HELLOWORLD")
 
     def test_rail_fence(self):
         plaintext = "HELLOWORLDTHISISATESTMESSAGEFORFREQCRACK"

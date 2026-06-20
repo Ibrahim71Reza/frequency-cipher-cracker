@@ -25,6 +25,7 @@ from freqcrack.core.rot import decrypt_rot, decrypt_rot47
 from freqcrack.core.keyword import decrypt_keyword
 from freqcrack.core.playfair import decrypt_playfair
 from freqcrack.core.autokey import decrypt_autokey
+from freqcrack.core.polybius import decrypt_polybius
 
 
 def read_input(input_value: str) -> str:
@@ -358,6 +359,17 @@ def solve_autokey_command(args):
     print()
 
 
+def solve_polybius_command(args):
+    text = read_input(args.input)
+    plaintext = decrypt_polybius(text)
+
+    print()
+    print("FreqCrack - Polybius Solver")
+    print("=" * 35)
+    print(plaintext.strip())
+    print()
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="freqcrack",
@@ -552,6 +564,13 @@ def main():
         help="Autokey starting key."
     )
     autokey_parser.set_defaults(func=solve_autokey_command)
+
+    polybius_parser = solve_subparsers.add_parser(
+        "polybius",
+        help="Decode Polybius Square cipher."
+    )
+    polybius_parser.add_argument("input", help="Cipher text or file path")
+    polybius_parser.set_defaults(func=solve_polybius_command)
 
     args = parser.parse_args()
 
