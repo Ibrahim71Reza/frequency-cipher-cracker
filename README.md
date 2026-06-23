@@ -1,4 +1,5 @@
 <div align="center">
+  
 # Frequency Cipher Cracker
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
