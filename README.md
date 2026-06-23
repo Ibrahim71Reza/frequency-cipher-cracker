@@ -1,3 +1,4 @@
+<div align="center">
 # Frequency Cipher Cracker
 
 ![Python](https://img.shields.io/badge/Python-3.x-blue)
@@ -54,6 +55,8 @@ It supports frequency analysis, Index of Coincidence, cipher detection hints, kn
 | Baconian                    | `freqcrack solve baconian`                |
 
 ---
+
+</div>
 
 ## Project Structure
 
